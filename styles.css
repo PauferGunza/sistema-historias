@@ -1,0 +1,156 @@
+/* Estilos gerais */
+:root {
+    --bg-color: #f8f9fa;
+    --text-color: #333;
+    --card-bg: #fff;
+    --card-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --primary-color: #0d6efd;
+    --secondary-bg: #f1f1f1;
+    --border-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --card-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    --primary-color: #4d8bff;
+    --secondary-bg: #2a2a2a;
+    --border-color: rgba(255, 255, 255, 0.05);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilos para os cards de histórias */
+.story-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    box-shadow: var(--card-shadow);
+    background-color: var(--card-bg);
+}
+
+.story-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.story-card .card-title {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.story-card .card-footer {
+    background-color: var(--card-bg);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Estilos para a página de detalhes da história */
+.story-title {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.story-content {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+/* Estilos para anexos */
+.attachment-card {
+    transition: transform 0.2s;
+    cursor: pointer;
+    background-color: var(--card-bg);
+}
+
+.attachment-card:hover {
+    transform: scale(1.03);
+}
+
+.attachment-preview {
+    height: 150px;
+    object-fit: cover;
+    background-color: var(--secondary-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.attachment-preview img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.attachment-preview i {
+    font-size: 3rem;
+    color: #6c757d;
+}
+
+/* Estilos para formulários */
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Estilos para previews de upload */
+.preview-item {
+    position: relative;
+}
+
+.preview-item .remove-preview {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.preview-item .remove-preview:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .attachment-preview {
+        height: 120px;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s;
+}
+
+/* Estilos para compartilhamento */
+.share-link-container {
+    animation: fadeIn 0.5s;
+}
+
+/* Estilos para categorias */
+.category-badge {
+    font-weight: normal;
+}

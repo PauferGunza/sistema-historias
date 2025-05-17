@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agora A histórias do jampones</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">Agora A histórias do jampones</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/" id="home-link">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/nova-historia" id="new-story-link">Nova História</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/categorias" id="categories-link">Categorias</a>
+                    </li>
+                </ul>
+                <form class="d-flex" id="search-form">
+                    <input class="form-control me-2" type="search" placeholder="Buscar histórias..." id="search-input">
+                    <button class="btn btn-light" type="submit">Buscar</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div id="app">
+            <!-- O conteúdo será carregado dinamicamente aqui -->
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates para as diferentes páginas -->
+    <template id="home-template">
+        <div class="row mb-4">
+            <div class="col">
+                <h1>Minhas Histórias</h1>
+                <p class="lead">Um lugar especial para guardar as histórias que sua namorada conta.</p>
+            </div>
+            <div class="col-auto d-flex align-items-center">
+                <a href="/nova-historia" class="btn btn-primary">
+                    <i class="bi bi-plus-lg"></i> Nova História
+                </a>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <select class="form-select" id="category-filter">
+                    <option value="">Todas as categorias</option>
+                    <!-- Categorias serão carregadas aqui -->
+                </select>
+            </div>
+        </div>
+
+        <div id="stories-container" class="row row-cols-1 row-cols-md-2 g-4">
+            <!-- Histórias serão carregadas aqui -->
+            <div class="col">
+                <div class="card h-100 story-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Carregando histórias...</h5>
+                        <p class="card-text">Por favor, aguarde enquanto carregamos suas histórias.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="no-stories" class="text-center py-5 d-none">
+            <i class="bi bi-journal-text display-1 text-muted"></i>
+            <h3 class="mt-3">Nenhuma história encontrada</h3>
+            <p class="lead">Comece adicionando sua primeira história!</p>
+            <a href="/nova-historia" class="btn btn-primary mt-3">
+                <i class="bi bi-plus-lg"></i> Nova História
+            </a>
+        </div>
+    </template>
+
+    <template id="story-detail-template">
+        <div class="mb-4">
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <h1 class="card-title story-title">Carregando...</h1>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="storyOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="storyOptionsDropdown">
+                            <li><a class="dropdown-item edit-story" href="#"><i class="bi bi-pencil"></i> Editar</a></li>
+                            <li><a class="dropdown-item share-story" href="#"><i class="bi bi-share"></i> Compartilhar</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item delete-story text-danger" href="#"><i class="bi bi-trash"></i> Excluir</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <span class="badge bg-secondary category-badge">Categoria</span>
+                    <small class="text-muted ms-2 story-date">Data</small>
+                </div>
+
+                <div class="story-content mb-4">
+                    Carregando conteúdo...
+                </div>
+
+                <div class="attachments-section">
+                    <h5><i class="bi bi-paperclip"></i> Anexos</h5>
+                    <div class="row row-cols-1 row-cols-md-3 g-3 attachments-container">
+                        <!-- Anexos serão carregados aqui -->
+                    </div>
+                    <div class="no-attachments d-none">
+                        <p class="text-muted">Nenhum anexo para esta história.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="share-link-container d-none alert alert-success">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Link de compartilhamento:</strong>
+                    <span id="share-link"></span>
+                </div>
+                <button class="btn btn-sm btn-outline-success copy-link">
+                    <i class="bi bi-clipboard"></i> Copiar
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <template id="new-story-template">
+        <div class="mb-4">
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+
+        <h1 class="mb-4">Nova História</h1>
+
+        <form id="story-form" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="story-title" class="form-label">Título</label>
+                <input type="text" class="form-control" id="story-title" required>
+                <div class="invalid-feedback">
+                    Por favor, informe um título para a história.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="story-category" class="form-label">Categoria</label>
+                <div class="input-group">
+                    <select class="form-select" id="story-category">
+                        <option value="">Selecione uma categoria</option>
+                        <!-- Categorias serão carregadas aqui -->
+                    </select>
+                    <button class="btn btn-outline-secondary" type="button" id="new-category-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="story-content" class="form-label">Conteúdo</label>
+                <textarea class="form-control" id="story-content" rows="10" required></textarea>
+                <div class="invalid-feedback">
+                    Por favor, informe o conteúdo da história.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="story-files" class="form-label">Anexos (opcional)</label>
+                <input class="form-control" type="file" id="story-files" multiple>
+                <div class="form-text">Você pode anexar imagens, documentos e outros arquivos.</div>
+            </div>
+
+            <div class="mb-3">
+                <div class="preview-container row row-cols-1 row-cols-md-4 g-3">
+                    <!-- Previews serão mostrados aqui -->
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-outline-secondary" id="cancel-story">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar História</button>
+            </div>
+        </form>
+    </template>
+
+    <template id="edit-story-template">
+        <div class="mb-4">
+            <a href="#" class="btn btn-outline-secondary back-to-story">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+
+        <h1 class="mb-4">Editar História</h1>
+
+        <form id="edit-story-form" class="needs-validation" novalidate>
+            <input type="hidden" id="edit-story-id">
+            <div class="mb-3">
+                <label for="edit-story-title" class="form-label">Título</label>
+                <input type="text" class="form-control" id="edit-story-title" required>
+                <div class="invalid-feedback">
+                    Por favor, informe um título para a história.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="edit-story-category" class="form-label">Categoria</label>
+                <div class="input-group">
+                    <select class="form-select" id="edit-story-category">
+                        <option value="">Selecione uma categoria</option>
+                        <!-- Categorias serão carregadas aqui -->
+                    </select>
+                    <button class="btn btn-outline-secondary" type="button" id="edit-new-category-btn">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="edit-story-content" class="form-label">Conteúdo</label>
+                <textarea class="form-control" id="edit-story-content" rows="10" required></textarea>
+                <div class="invalid-feedback">
+                    Por favor, informe o conteúdo da história.
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Anexos atuais</label>
+                <div class="current-attachments row row-cols-1 row-cols-md-4 g-3">
+                    <!-- Anexos atuais serão mostrados aqui -->
+                </div>
+                <div class="no-current-attachments d-none">
+                    <p class="text-muted">Nenhum anexo para esta história.</p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="edit-story-files" class="form-label">Adicionar novos anexos (opcional)</label>
+                <input class="form-control" type="file" id="edit-story-files" multiple>
+            </div>
+
+            <div class="mb-3">
+                <div class="edit-preview-container row row-cols-1 row-cols-md-4 g-3">
+                    <!-- Previews serão mostrados aqui -->
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-outline-secondary back-to-story">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Atualizar História</button>
+            </div>
+        </form>
+    </template>
+
+    <template id="categories-template">
+        <div class="mb-4">
+            <a href="/" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Categorias</h1>
+            <button class="btn btn-primary" id="add-category-btn">
+                <i class="bi bi-plus-lg"></i> Nova Categoria
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Histórias</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="categories-table-body">
+                    <!-- Categorias serão carregadas aqui -->
+                    <tr>
+                        <td colspan="4" class="text-center">Carregando categorias...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="no-categories" class="text-center py-5 d-none">
+            <i class="bi bi-tags display-1 text-muted"></i>
+            <h3 class="mt-3">Nenhuma categoria encontrada</h3>
+            <p class="lead">Crie categorias para organizar suas histórias!</p>
+            <button class="btn btn-primary mt-3" id="no-categories-add-btn">
+                <i class="bi bi-plus-lg"></i> Nova Categoria
+            </button>
+        </div>
+    </template>
+
+    <template id="shared-story-template">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title story-title mb-3">Carregando...</h1>
+
+                <div class="mb-3">
+                    <span class="badge bg-secondary category-badge">Categoria</span>
+                    <small class="text-muted ms-2 story-date">Data</small>
+                </div>
+
+                <div class="story-content mb-4">
+                    Carregando conteúdo...
+                </div>
+
+                <div class="attachments-section">
+                    <h5><i class="bi bi-paperclip"></i> Anexos</h5>
+                    <div class="row row-cols-1 row-cols-md-3 g-3 attachments-container">
+                        <!-- Anexos serão carregados aqui -->
+                    </div>
+                    <div class="no-attachments d-none">
+                        <p class="text-muted">Nenhum anexo para esta história.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Modais -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nova Categoria</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="category-form">
+                        <div class="mb-3">
+                            <label for="category-name" class="form-label">Nome</label>
+                            <input type="text" class="form-control" id="category-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category-description" class="form-label">Descrição (opcional)</label>
+                            <textarea class="form-control" id="category-description" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="save-category-btn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir esta história? Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toast-title">Notificação</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fechar"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                Mensagem de notificação
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-3 text-center text-muted">
+        <div class="container">
+            <p>Agora A histórias do jampones - Um lugar onde podes guardar as histórias da tua namorada</p>
+            <p>Criado por Paufer Gunza</p>
+            <button id="theme-toggle" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-moon-stars"></i> Alternar Modo Escuro
+            </button>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>
